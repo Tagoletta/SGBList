@@ -1,0 +1,67 @@
+name: Update blocklists
+
+on:
+  schedule:
+    # Every hour, on the hour (UTC).
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+# Never let two runs touch the committed state at the same time. A long initial
+# crawl run will keep the next scheduled run queued instead of clashing.
+concurrency:
+  group: update-lists
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # GitHub-hosted runners hard-cap at 6h; keep our own budget under that.
+    timeout-minutes: 330
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Fetch & regenerate lists
+        env:
+          TZ: Europe/Istanbul
+          DATA_DIR: data
+          MIN_DELAY: "10"
+          MAX_DELAY: "50"
+          INC_MIN_DELAY: "3"
+          INC_MAX_DELAY: "10"
+          # Stop & commit progress after ~5h so the initial crawl is resumable
+          # across scheduled runs and never hits the 6h hard limit.
+          TIME_BUDGET_SECONDS: "18000"
+        run: |
+          set +e
+          python scraper/fetch.py
+          rc=$?
+          set -e
+          echo "fetch.py exit code: $rc"
+          # 0 = up to date, 10 = full crawl still in progress (both are fine here).
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 10 ]; then
+            exit "$rc"
+          fi
+
+      - name: Commit updated lists
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update blocklists ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
