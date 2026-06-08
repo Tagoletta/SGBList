@@ -43,6 +43,28 @@ lost from the wider windows.
 * **After the full crawl completes**: each run does a fast **incremental** update
   — only the newest pages are fetched until a record we already have is reached —
   then the lists are regenerated. The workflow runs this **once per hour**.
+* **Periodically (every `FULL_RESYNC_DAYS`, default 7)**: instead of an
+  incremental update, a fresh full crawl runs to detect entries the source has
+  **removed** (see below).
+
+## Removals (delisting)
+
+The incremental update only ever adds; it cannot see that the source dropped an
+entry. To catch removals, every `FULL_RESYNC_DAYS` (default **7**) the fetcher
+re-crawls the whole index. Each record is stamped with the pass that last saw it,
+and when a full pass finishes, any record **not** seen during it is treated as
+removed at the source:
+
+* it is deleted from the database, so it disappears from **all** lists
+  (`full-*` and every `days-*` window) on the next regeneration, and
+* it is appended to **`data/removed.log`** — one tab-separated line per removal:
+
+  ```
+  2026-06-08T17:34:38	REMOVED	removed-x.com	type=domain	id=3	added=2026-06-01 10:00:00
+  ```
+
+Set `FULL_RESYNC_DAYS=0` to disable periodic re-syncs (removals then won't be
+detected). `removed.log` is append-only history; the firewall ignores it.
 
 > ⚠️ The index has ~475k records (~23,760 pages), **including historical /
 > backdated entries** — the full crawl walks every page to the end, so nothing
@@ -80,6 +102,7 @@ in `docker-compose.yml`:
 | `MIN_DELAY` / `MAX_DELAY` | `10` / `50` | seconds between pages during the full crawl |
 | `INC_MIN_DELAY` / `INC_MAX_DELAY` | `3` / `10` | seconds between pages during incremental |
 | `TIME_BUDGET_SECONDS` | `3300` | checkpoint the full crawl after this long |
+| `FULL_RESYNC_DAYS` | `7` | re-crawl everything this often to detect removals (0 = off) |
 | `INCREMENTAL_MAX_PAGES` | `200` | safety cap for the incremental update |
 | `DATA_DIR` | `/data` | output directory |
 | `USER_AGENT` | (above) | request User-Agent |

@@ -44,6 +44,8 @@ jobs:
           MAX_DELAY: "12"
           INC_MIN_DELAY: "3"
           INC_MAX_DELAY: "10"
+          # Re-crawl everything weekly to catch entries removed at the source.
+          FULL_RESYNC_DAYS: "7"
           # Stop & commit progress after ~5h so the initial crawl is resumable
           # across scheduled runs and never hits the 6h hard limit.
           TIME_BUDGET_SECONDS: "18000"

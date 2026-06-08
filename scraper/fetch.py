@@ -72,6 +72,11 @@ TIME_BUDGET_SECONDS = float(os.environ.get("TIME_BUDGET_SECONDS", "3300"))
 # Safety cap for the incremental update so it can never run away.
 INCREMENTAL_MAX_PAGES = int(os.environ.get("INCREMENTAL_MAX_PAGES", "200"))
 
+# Re-crawl the whole index every N days to detect entries the source has REMOVED
+# (delisted). Removals can only be found by a full pass, never by the incremental
+# update. Set to 0 to disable periodic re-syncs.
+FULL_RESYNC_DAYS = float(os.environ.get("FULL_RESYNC_DAYS", "7"))
+
 # Ageing windows (days).
 WINDOWS = [30, 60, 90, 120]
 
@@ -82,6 +87,7 @@ DB_FILE = DATA_DIR / "database.jsonl"     # one JSON record per line, sorted by 
 STATE_FILE = DATA_DIR / "_state.json"     # crawl metadata
 FULL_DOMAINS = DATA_DIR / "full-domains.txt"
 FULL_IPS = DATA_DIR / "full-ips.txt"
+REMOVED_LOG = DATA_DIR / "removed.log"   # append-only log of source delistings
 
 EXIT_OK = 0          # nothing more to do until next scheduled run
 EXIT_CONTINUE = 10   # full crawl still in progress -> run again immediately
@@ -139,18 +145,17 @@ def save_db(db: dict[int, dict]) -> None:
     with tmp.open("w", encoding="utf-8", newline="\n") as fh:
         for _id in sorted(db.keys()):
             rec = db[_id]
-            fh.write(
-                json.dumps(
-                    {
-                        "id": rec["id"],
-                        "url": rec["url"],
-                        "type": rec.get("type", "domain"),
-                        "date": rec.get("date", ""),
-                    },
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
+            out = {
+                "id": rec["id"],
+                "url": rec["url"],
+                "type": rec.get("type", "domain"),
+                "date": rec.get("date", ""),
+            }
+            # "p" = the full-crawl pass in which we last saw this record at the
+            # source; used to detect removals. Omitted when unknown (legacy rows).
+            if rec.get("p") is not None:
+                out["p"] = rec["p"]
+            fh.write(json.dumps(out, ensure_ascii=False) + "\n")
     tmp.replace(DB_FILE)
 
 
@@ -166,6 +171,8 @@ def load_state() -> dict:
         "total_pages": None,
         "last_run": None,
         "last_max_id": None,
+        "pass_id": 1,
+        "last_full_completed": None,
     }
 
 
@@ -179,8 +186,9 @@ def save_state(state: dict) -> None:
     tmp.replace(STATE_FILE)
 
 
-def store_records(db: dict[int, dict], models: list[dict]) -> int:
-    """Insert/update records, return how many were brand new."""
+def store_records(db: dict[int, dict], models: list[dict], pass_id: int) -> int:
+    """Insert/update records, stamping each with the current pass_id (so we can
+    later tell which records the source still lists). Returns how many were new."""
     new = 0
     for m in models:
         try:
@@ -194,8 +202,52 @@ def store_records(db: dict[int, dict], models: list[dict]) -> int:
             "url": m.get("url", ""),
             "type": m.get("type", "domain"),
             "date": m.get("date", ""),
+            "p": pass_id,
         }
     return new
+
+
+def log_removals(records: list[dict]) -> None:
+    """Append delisted entries to the removals log (one tab-separated line each)."""
+    ts = datetime.now().isoformat(timespec="seconds")
+    lines = [
+        f"{ts}\tREMOVED\t{rec.get('url', '')}\ttype={rec.get('type', '')}\t"
+        f"id={rec.get('id')}\tadded={rec.get('date', '')}"
+        for rec in records
+    ]
+    with REMOVED_LOG.open("a", encoding="utf-8", newline="\n") as fh:
+        fh.write("\n".join(lines) + "\n")
+
+
+def sweep_removed(db: dict[int, dict], pass_id: int) -> int:
+    """After a full pass, drop records not seen this pass (i.e. removed at the
+    source), logging each one. Records with an unknown pass are left untouched."""
+    stale = [
+        rec
+        for rec in db.values()
+        if rec.get("p") is not None and int(rec["p"]) < pass_id
+    ]
+    if not stale:
+        return 0
+    log_removals(stale)
+    for rec in stale:
+        db.pop(int(rec["id"]), None)
+    print(f"[removed] {len(stale)} delisted entries dropped -> {REMOVED_LOG.name}")
+    return len(stale)
+
+
+def full_resync_due(state: dict) -> bool:
+    """True if it's time for a periodic full re-crawl to catch source removals."""
+    if FULL_RESYNC_DAYS <= 0:
+        return False
+    last = state.get("last_full_completed")
+    if not last:
+        return False
+    try:
+        last_dt = datetime.fromisoformat(last)
+    except ValueError:
+        return False
+    return datetime.now() - last_dt >= timedelta(days=FULL_RESYNC_DAYS)
 
 
 # --------------------------------------------------------------------------- #
@@ -303,7 +355,8 @@ def sleep_between(lo: float, hi: float) -> None:
 def run_full_crawl(session, db, state) -> int:
     start = time.monotonic()
     page = int(state.get("next_page") or 1)
-    print(f"[full] resuming full crawl at page {page}")
+    pass_id = int(state["pass_id"])
+    print(f"[full] resuming full crawl (pass {pass_id}) at page {page}")
 
     while True:
         if TIME_BUDGET_SECONDS and (time.monotonic() - start) >= TIME_BUDGET_SECONDS:
@@ -328,7 +381,7 @@ def run_full_crawl(session, db, state) -> int:
         if total_pages:
             state["total_pages"] = total_pages
         models = data.get("models", [])
-        new = store_records(db, models)
+        new = store_records(db, models, pass_id)
         print(
             f"[full] page {page}/{state.get('total_pages')} "
             f"records={len(models)} new={new} db={len(db)}",
@@ -337,14 +390,19 @@ def run_full_crawl(session, db, state) -> int:
 
         # End of data: empty page or we passed the last page.
         if not models or (state.get("total_pages") and page >= state["total_pages"]):
+            removed = sweep_removed(db, pass_id)
             state["full_crawl_complete"] = True
             state["next_page"] = 1
+            state["last_full_completed"] = datetime.now().isoformat(timespec="seconds")
             if db:
                 state["last_max_id"] = max(db.keys())
             save_db(db)
             save_state(state)
             stats = generate_lists(db)
-            print(f"[full] crawl COMPLETE. lists: {stats}")
+            print(
+                f"[full] crawl COMPLETE (pass {pass_id}). "
+                f"removed {removed} delisted. lists: {stats}"
+            )
             return EXIT_OK
 
         page += 1
@@ -377,7 +435,7 @@ def run_incremental(session, db, state) -> int:
         if not models:
             break
 
-        new = store_records(db, models)
+        new = store_records(db, models, int(state["pass_id"]))
         total_new += new
         page_min_id = min(int(m["id"]) for m in models if "id" in m)
         print(f"[incr] page {page} new={new} (min id={page_min_id}, known_max={known_max})")
@@ -409,11 +467,24 @@ def main() -> int:
 
     db = load_db()
     state = load_state()
+    if not state.get("pass_id"):
+        state["pass_id"] = 1
     state["last_run"] = datetime.now().isoformat(timespec="seconds")
 
     session = make_session()
 
     if not state.get("full_crawl_complete"):
+        # (Re)seed still in progress — keep crawling the whole index.
+        code = run_full_crawl(session, db, state)
+    elif full_resync_due(state):
+        # Periodic full re-crawl so we notice entries removed at the source.
+        state["pass_id"] = int(state["pass_id"]) + 1
+        state["full_crawl_complete"] = False
+        state["next_page"] = 1
+        print(
+            f"[resync] {FULL_RESYNC_DAYS}d since last full crawl -> "
+            f"starting full pass {state['pass_id']}"
+        )
         code = run_full_crawl(session, db, state)
     else:
         code = run_incremental(session, db, state)

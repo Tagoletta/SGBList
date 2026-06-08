@@ -16,6 +16,8 @@ services:
       INC_MAX_DELAY: "10"
       # Checkpoint the long crawl every ~55 min.
       TIME_BUDGET_SECONDS: "3300"
+      # Re-crawl everything weekly to detect entries removed at the source.
+      FULL_RESYNC_DAYS: "7"
     volumes:
       # Output lists + database. Point a firewall at the files in ./data.
       - ./data:/data
