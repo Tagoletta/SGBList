@@ -2,8 +2,11 @@ name: Update blocklists
 
 on:
   schedule:
-    # Every hour, on the hour (UTC).
-    - cron: "0 * * * *"
+    # Every 10 minutes. Runs don't overlap (see the concurrency group below):
+    # a long crawl run keeps the next trigger pending and it starts the moment
+    # the current one finishes. Frequent firing mainly helps the first run start
+    # sooner and survives GitHub dropping the occasional schedule event.
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 # Never let two runs touch the committed state at the same time. A long initial
