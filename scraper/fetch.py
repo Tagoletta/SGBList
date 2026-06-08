@@ -49,12 +49,11 @@ API_URL = os.environ.get(
     "API_URL", "https://siberguvenlik.gov.tr/api/address/index"
 )
 
-# English form of: Türkiye Cumhuriyeti Cumhurbaşkanlığı İletişim Başkanlığı
-# Bilgi İşlem Dairesi (ASCII-only so it is a valid HTTP header value).
+# Ordinary modern browser User-Agent.
 USER_AGENT = os.environ.get(
     "USER_AGENT",
-    "Republic of Turkiye - Presidency Directorate of Communications - "
-    "Information Technologies Department",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
 )
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", "data"))
