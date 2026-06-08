@@ -136,7 +136,7 @@ def load_db() -> dict[int, dict]:
 
 def save_db(db: dict[int, dict]) -> None:
     tmp = DB_FILE.with_suffix(".jsonl.tmp")
-    with tmp.open("w", encoding="utf-8") as fh:
+    with tmp.open("w", encoding="utf-8", newline="\n") as fh:
         for _id in sorted(db.keys()):
             rec = db[_id]
             fh.write(
@@ -172,7 +172,9 @@ def load_state() -> dict:
 def save_state(state: dict) -> None:
     tmp = STATE_FILE.with_suffix(".json.tmp")
     tmp.write_text(
-        json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(state, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+        newline="\n",
     )
     tmp.replace(STATE_FILE)
 
@@ -221,7 +223,13 @@ def write_list(path: Path, entries: set[str], is_ip: bool) -> None:
 
     ordered = sorted(entries, key=ip_key if is_ip else str.lower)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text("\n".join(ordered) + ("\n" if ordered else ""), encoding="utf-8")
+    # newline="\n" forces clean LF endings on every platform (no CRLF on Windows)
+    # so firewalls reading the lists get one bare domain/IP per line.
+    tmp.write_text(
+        "\n".join(ordered) + ("\n" if ordered else ""),
+        encoding="utf-8",
+        newline="\n",
+    )
     tmp.replace(path)
 
 
