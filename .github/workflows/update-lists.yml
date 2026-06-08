@@ -39,8 +39,10 @@ jobs:
         env:
           TZ: Europe/Istanbul
           DATA_DIR: data
-          MIN_DELAY: "10"
-          MAX_DELAY: "50"
+          # Per-page wait during the (big) full crawl. 5-12s ~= ~2 days to seed.
+          # Only affects full crawls; the hourly incremental uses INC_* below.
+          MIN_DELAY: "5"
+          MAX_DELAY: "12"
           INC_MIN_DELAY: "3"
           INC_MAX_DELAY: "10"
           # Stop & commit progress after ~5h so the initial crawl is resumable
