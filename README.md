@@ -21,9 +21,11 @@ Domains and IPs are kept in **separate** files:
 | Last 90 days | `days-90-domains.txt` | `days-90-ips.txt` |
 | Last 120 days | `days-120-domains.txt` | `days-120-ips.txt` |
 
-Each file is one entry per line, sorted (domains alphabetically, IPs numerically)
-so git diffs stay clean. Point your firewall (pfSense / OPNsense / MikroTik /
-ipset, etc.) at whichever files you need.
+Each file is **one bare domain or IP per line** — no quotes, no surrounding
+whitespace, LF line endings — sorted (domains alphabetically, IPs numerically)
+for clean diffs. Point your firewall (pfSense / OPNsense / MikroTik / ipset, etc.)
+at whichever files you need. (`database.jsonl` and `_state.json` are internal
+bookkeeping; the firewall should ignore them.)
 
 `data/database.jsonl` is the source of truth (id, url, type, date). The `.txt`
 lists are **derived from it plus the current clock on every run**, so ageing is
@@ -34,27 +36,32 @@ lost from the wider windows.
 ## How it decides what to do
 
 * **First run** (no `full-*` lists yet): state is wiped and a **full crawl** of
-  every page begins, waiting `MIN_DELAY..MAX_DELAY` (default **10–50 s**) between
-  pages so the API is not hammered. The crawl is resumable and checkpointed.
+  every page begins, with a randomised `MIN_DELAY..MAX_DELAY` pause between pages
+  so the API is not hammered. The crawl is resumable and checkpointed. The GitHub
+  Actions workflow is set to **5–12 s/page** (≈2 days to seed everything); the
+  code/Docker default is the more conservative **10–50 s**.
 * **After the full crawl completes**: each run does a fast **incremental** update
   — only the newest pages are fetched until a record we already have is reached —
-  then the lists are regenerated. The container runs this **once per hour**.
+  then the lists are regenerated. The workflow runs this **once per hour**.
 
 > ⚠️ The index has ~475k records (~23,760 pages), **including historical /
 > backdated entries** — the full crawl walks every page to the end, so nothing
-> old is missed. At 10–50 s/page the initial crawl takes **several days** of wall
-> clock. On GitHub Actions this happens automatically across many hourly runs:
-> each run crawls a ~5 h chunk, commits its progress, and the next run resumes
-> where it left off until the crawl is complete. After that, every hourly run is
-> just a quick incremental update.
+> old is missed. On GitHub Actions this happens automatically across many runs:
+> each run crawls for up to ~5 h, commits its progress, and the next run resumes
+> where it left off until the crawl is complete. At the configured 5–12 s/page the
+> initial seed takes **~2 days**; after that, every hourly run is just a quick
+> incremental update.
 
 ## User-Agent
 
-Requests identify as (ASCII form of the Turkish title):
+Requests use an ordinary browser User-Agent:
 
 ```
-Republic of Turkiye - Presidency Directorate of Communications - Information Technologies Department
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
 ```
+
+Override it with the `USER_AGENT` environment variable (in `update-lists.yml` or
+`docker-compose.yml`).
 
 ## Optional: self-host with Docker
 
