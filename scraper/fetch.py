@@ -77,6 +77,11 @@ INCREMENTAL_MAX_PAGES = int(os.environ.get("INCREMENTAL_MAX_PAGES", "200"))
 # update. Set to 0 to disable periodic re-syncs.
 FULL_RESYNC_DAYS = float(os.environ.get("FULL_RESYNC_DAYS", "7"))
 
+# Self-heal guard: if the crawl is flagged "complete" but the database holds less
+# than this fraction of the source's reported totalCount, the seed clearly didn't
+# really finish, so restart the full crawl instead of doing an incremental update.
+SEED_COMPLETE_FRACTION = float(os.environ.get("SEED_COMPLETE_FRACTION", "0.8"))
+
 # Ageing windows (days).
 WINDOWS = [30, 60, 90, 120]
 
@@ -380,7 +385,27 @@ def run_full_crawl(session, db, state) -> int:
         total_pages = data.get("pageCount")
         if total_pages:
             state["total_pages"] = total_pages
+        if data.get("totalCount"):
+            state["total_count"] = data["totalCount"]
         models = data.get("models", [])
+
+        total_pages_known = state.get("total_pages")
+        reached_end = bool(total_pages_known) and page >= total_pages_known
+
+        # An empty page BEFORE the real last page is a transient API hiccup, NOT
+        # the end of the data. Treating it as the end is what truncated an early
+        # seed — so checkpoint and retry this page on the next run instead.
+        if not models and total_pages_known and not reached_end:
+            print(
+                f"[full] page {page} returned 0 records mid-crawl "
+                f"(of {total_pages_known}) -> checkpoint & retry next run"
+            )
+            state["next_page"] = page
+            save_db(db)
+            save_state(state)
+            generate_lists(db)
+            return EXIT_CONTINUE
+
         new = store_records(db, models, pass_id)
         print(
             f"[full] page {page}/{state.get('total_pages')} "
@@ -388,8 +413,8 @@ def run_full_crawl(session, db, state) -> int:
             flush=True,
         )
 
-        # End of data: empty page or we passed the last page.
-        if not models or (state.get("total_pages") and page >= state["total_pages"]):
+        # Real end of data: reached the last page (or empty with no page count).
+        if reached_end or not models:
             removed = sweep_removed(db, pass_id)
             state["full_crawl_complete"] = True
             state["next_page"] = 1
@@ -431,6 +456,25 @@ def run_incremental(session, db, state) -> int:
         total_pages = data.get("pageCount")
         if total_pages:
             state["total_pages"] = total_pages
+        total_count = data.get("totalCount")
+        if total_count:
+            state["total_count"] = total_count
+
+        # Self-heal: if a previous "completed" seed was actually truncated, the
+        # database will be far smaller than the source -> redo the full crawl.
+        if (
+            page == 1
+            and total_count
+            and len(db) < SEED_COMPLETE_FRACTION * total_count
+        ):
+            print(
+                f"[incr] db has {len(db)} records but source reports {total_count}"
+                f" -> seed was incomplete, switching to a full (re)crawl"
+            )
+            state["full_crawl_complete"] = False
+            state["next_page"] = 1
+            return run_full_crawl(session, db, state)
+
         models = data.get("models", [])
         if not models:
             break
