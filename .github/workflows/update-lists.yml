@@ -67,7 +67,21 @@ jobs:
           git add data/
           if git diff --cached --quiet; then
             echo "No changes to commit."
-          else
-            git commit -m "chore: update blocklists ($(date -u +'%Y-%m-%d %H:%M UTC'))"
-            git push
+            exit 0
           fi
+          git commit -m "chore: update blocklists ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          # main may have moved while the long crawl ran (e.g. code pushes). Our
+          # commit only touches data/, so rebasing replays just that diff onto the
+          # new tip — keeping any code changes intact (a plain reset would revert
+          # them). Works with the shallow checkout. Retry if main moves again.
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected; rebasing onto latest main (attempt $attempt)..."
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "push still failing after retries" >&2
+          exit 1
