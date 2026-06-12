@@ -1951,8 +1951,6 @@ mobildijitalfirsatlar.sbs
 mobile-karaca.vercel.app
 mobile-obilet.uk
 mobilservis-83.sbs
-mobilservis-84.sbs
-mobilservisler-28.sbs
 mobilservisler-29.sbs
 mobilservisler-3.sbs
 mobilservisorg.com
@@ -2757,7 +2755,6 @@ tr-karacas.shop
 tr-karca.top
 tr-karcas.shop
 tr.karacasales.shop
-tr42-guncelsikaytler.sbs
 tr44-guncelsikaytler.sbs
 track-br-gre-nadetweb.myonlineportal.ch
 trackingservice.monday.com
