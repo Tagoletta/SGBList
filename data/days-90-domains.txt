@@ -3308,7 +3308,6 @@ dalvico.shop
 dalvico.site
 damatmacunlari.lat
 daniro.click
-danismanmedym.com
 dao-asiiv.icu
 dao-asioiiv.icu
 dao-asoiiv.icu
@@ -3456,7 +3455,6 @@ deniz.hizmetleri.seninle.hizmetlerimizdensfasfas.life
 deniz535283637293638.lol
 denizilersm.duckdns.org
 denizilerss.duckdns.org
-denizmobil.duckdns.org
 denizmobl.firsati.kacirma.solariukampanski.life
 denizsizlerle.duckdns.org
 denkla45.nicepage.io
@@ -4470,7 +4468,6 @@ firsatbugnicin.dns.navy
 firsathaftasi.com.tr
 firsati-kacirma.duckdns.org
 firsatim-aktif.click
-firsatim-carrefoursa.com
 firsatim-onlin.click
 firsatim-online.click
 firsatimburda.sbs
@@ -5237,8 +5234,6 @@ guncelsikayetler-82.sbs
 guncelsikayetler-c14.sbs
 guncelsikayetler-c15.sbs
 guncelsikaytlertr-23.sbs
-guncelsikaytlertr-29.sbs
-guncelsikaytlertr-30.sbs
 guncelsistemhaber.com
 gunceltrsikayetler-253.sbs
 gunceltrsikayetler-255.sbs
@@ -5299,7 +5294,6 @@ guvenilir-alisveris.com
 guvenilirpanel.xyz
 guvenilirsaticisi.online
 guvenilirsorgu.co
-guvenilirsorgu.xyz
 guveninvestturkiye.com
 guvenlealsepetim.mooo.com
 guvenleodemeburada.com
@@ -6880,7 +6874,6 @@ karacanisanbasi.cfd
 karacanisanilk.cfd
 karacaonline.store
 karacastoretr.shop
-karacatava.cfd
 karacatr.shop
 karacawz.shop
 karagozototamir.com
@@ -9240,7 +9233,6 @@ orecontrol.digital
 oreprospect.icu
 orevision.click
 organkcalsmalarypryz.click
-orie-l-g-r-n-l-o.myonlineportal.ch
 orientcore.tech
 orientpeak.biz
 orientru.com
@@ -9439,7 +9431,6 @@ pelnix.click
 pelnpp.help
 peloetwq71.com
 pelorso90la.com
-pemorixal.com
 pepepupuchek13.com
 perapogipu.com
 percusodma.com
@@ -10587,7 +10578,6 @@ sdfdmsdmsdmsd.sbs
 sdffgsdfshj43dff32.sbs
 sdfhssdf123jfhd.click
 sdfkdslfcckjasdcjkajds.sbs
-sdfklasdkaskdaslkdas.sbs
 sdfsdfqweqwef.duckdns.org
 sdgdgdfs423.com
 sdgsdfhdasfs241.sbs
@@ -12287,7 +12277,6 @@ tq2x9m.click
 tr-115-polistr.online
 tr-155-polistr.online
 tr-2026aktifgirislerim.sbs
-tr-4.guncelsikaytlertr-21.sbs
 tr-alisveris-param-guvende.online
 tr-get-servis.online
 tr-giriskampanya.shop
@@ -12441,9 +12430,7 @@ trpttgovbw.cc
 trpttgovgk.cc
 trpttgovoi.cc
 trpttgovor.cc
-trpttgovpc.cc
 trpttgovpo.cc
-trpttgovpv.cc
 trpttgovqs.icu
 trpttgovx.cc
 trs.jyhsolucion.ar
