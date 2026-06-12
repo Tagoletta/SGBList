@@ -69,11 +69,17 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "chore: update blocklists ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          git commit -m "chore: update blocklists ($(TZ='Europe/Istanbul' date +'%Y-%m-%d %H:%M UTC+3'))"
           # main may have moved while the long crawl ran (e.g. code pushes). Our
           # commit only touches data/, so rebasing replays just that diff onto the
           # new tip — keeping any code changes intact (a plain reset would revert
           # them). Works with the shallow checkout. Retry if main moves again.
+          #
+          # If main also moved the generated data/ files (e.g. another run landed),
+          # those same files conflict on every rebase. We just regenerated them from
+          # the authoritative current state, so our version wins: in a rebase our
+          # replayed commit is "theirs", hence -X theirs. Abort any half-finished
+          # rebase before retrying so a stray conflict can't wedge the loop.
           for attempt in 1 2 3 4 5; do
             if git push origin HEAD:main; then
               echo "pushed on attempt $attempt"
@@ -81,7 +87,10 @@ jobs:
             fi
             echo "push rejected; rebasing onto latest main (attempt $attempt)..."
             git fetch origin main
-            git rebase origin/main
+            if ! git rebase -X theirs origin/main; then
+              echo "rebase hit an unresolved conflict; aborting and retrying" >&2
+              git rebase --abort || true
+            fi
           done
           echo "push still failing after retries" >&2
           exit 1
