@@ -1075,7 +1075,6 @@ guvendeticaretlerim.store
 guvenli-odemler.online
 guvenli-online-e-ticaret.com
 guvenli-pos.com
-guvenliodeme-sahibinden-havale.com
 guvenlisepet-hizmet.online
 guvenlisepetim-hizmet.online
 guvenlisepetler-hizmet.online
@@ -1756,7 +1755,6 @@ mail.pttavme.com
 makoslzuyt.com
 maliegm.net
 maliidariceza.org
-malimahkeme.org
 maliyecezaportal.net
 maliyesicil.org
 malkocbakie.lat
@@ -2038,7 +2036,6 @@ openjoiter.site
 openjump.site
 openport.store
 openpush.store
-openturk.company
 oppiwallet.site
 oprasdsdgpoardas.co
 oprasdsdgpoardas.shop
@@ -2191,8 +2188,6 @@ ptt.avmhemenal.com
 ptt.sepetimhizlisatinal.com
 pttavm-arackilometresorgulama.web.app
 pttavm-ilanlarim-sepette.com
-pttavm-km-dokumu.firebaseapp.com
-pttavm-km-dokumu.web.app
 pttavm-tramer-km-sorgu.web.app
 pttavm.crefrsnzngtrdklri.info
 pttavm.guvendeilesatinal.com
