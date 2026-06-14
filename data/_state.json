@@ -1,10 +1,10 @@
 {
   "full_crawl_complete": false,
-  "next_page": 16917,
-  "total_pages": 23823,
-  "last_run": "2026-06-14T11:11:38",
+  "next_page": 17008,
+  "total_pages": 23826,
+  "last_run": "2026-06-14T16:12:14",
   "last_max_id": 1124650,
   "pass_id": 1,
   "last_full_completed": "2026-06-09T11:09:04",
-  "total_count": 476450
+  "total_count": 476501
 }
