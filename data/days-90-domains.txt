@@ -1112,13 +1112,7 @@ artivun.sbs
 artkhersesycokbasitsendegelbzekatl.online
 artlino.gifts
 artsselection.com
-arvex.shop
 arvex.store
-arvexa.shop
-arvexaapp.site
-arvexahq.shop
-arvexahq.site
-arvexalabs.store
 arvexapp.shop
 arvexhq.shop
 arvexhubs.shop
@@ -1369,8 +1363,6 @@ axionhq.store
 axionhubs.store
 axionlabs.shop
 axionlabs.store
-axioraapp.store
-axiorahubs.site
 axprbo.click
 ayaras.click
 ayaxum.click
@@ -2885,7 +2877,6 @@ check.office365-update.com
 check02id.com
 checkle.live
 checkmarx.cx
-checkpoint-vpn.com
 cherishbasket.com
 cherryberry.click
 cherrydadfog.com
@@ -2922,7 +2913,6 @@ circuithubs.shop
 circuithubs.site
 circuitlabs.shop
 circuitlabs.site
-cisco-secure-client.es
 cistersaedc.com
 citrusnex.vu
 citycore.gifts
@@ -2970,7 +2960,6 @@ clevoxhq.store
 clevoxhubs.shop
 clevoxhubs.store
 clevoxlabs.shop
-clevoxlabs.store
 clicklab.qpon
 clickonix.media
 clicktk.com
@@ -2987,7 +2976,6 @@ cloud-verification.com
 cloudanalitics.net
 cloudbranch.shop
 cloudcanvrtyas.info
-cloudflare.report
 cloudfront-021.s3.us-west-2.amazonaws.com
 cloudguide.in
 cloudhollow.store
@@ -4299,7 +4287,6 @@ fencelabs.shop
 fencelabs.site
 fenduriq.live
 feners.jaguar-style.cfd
-fenora.shop
 fenoraapp.shop
 fenorahq.shop
 fenorahq.store
@@ -4521,14 +4508,6 @@ forest-entity.cc
 forestsignal.com
 forgejadei.pro
 forget-canal-chancellor-mas.trycloudflare.com
-forticlient-for-mac.com
-forticlient-vpn.de
-forticlient-vpn.fr
-forticlient-vpn.it
-forticlient.ca
-forticlient.co.uk
-forticlient.no
-fortinet-vpn.com
 forzir.cfd
 foslanaos.nicepage.io
 founiodrai.digital
@@ -4659,7 +4638,6 @@ gardenino.shop
 gardiun.biz
 gargarx23grntx2.duckdns.org
 garlt-lo-istatistik.myonlineportal.ch
-garntibbva.click
 garxabcan.gleeze.com
 garxabecan.webredirect.org
 garxefscan.opik.net
@@ -4810,7 +4788,6 @@ getkelvora.shop
 getkelvora.site
 getkelvora.store
 getklowe.store
-getkronex.shop
 getkronex.store
 getkryon.shop
 getkryon.store
@@ -5505,7 +5482,6 @@ hanimis.eafc-playteam.cfd
 haninerdesnbvbaburda.click
 haploadpin.com
 happy-talent.cfd
-happyglamper.ro
 happymarket.gifts
 happyparcel.gifts
 happyreel.lol
@@ -6495,8 +6471,6 @@ iuumfgrrnuhb.zhivachkapro.com
 iuzndfqr.com
 ivandria.com
 ivanthera.com
-ivanti-secure-access.de
-ivanti-vpn.org
 ivdmobil.com
 ivorygarden.gifts
 ivozt.com
@@ -7201,8 +7175,6 @@ kmpnymrkziprmsynnktasi.pro
 kmpnymrkziprmsynnktasi.site
 kmpnyprmsynckls0.info
 kmpnyprmsynckls0.pro
-kmpnysprmsyncklss.info
-kmpnysprmsyncklss.live
 kmpnysprmsyncklss.pro
 kmpnysprmsynfrstbsvrrr.live
 kmpnysprmsynfrstbsvrrr.pro
@@ -7218,7 +7190,6 @@ kmrehberi.firebaseapp.com
 kmrehberi.web.app
 kmsmds0504skdmda.com
 kmsorgalmasayanmerdar.web.app
-kmsorglamassiz.duckdns.org
 kmsorglamayapansinem.duckdns.org
 kmsorglamayapgamzehemn.web.app
 kmsorgu.com.tr
@@ -8485,7 +8456,6 @@ my-redirect-130.top
 my-redirect-210.top
 myacc-portal.myonlineportal.de
 myciqoi.digital
-myconnection.pro
 mydigitalrevival.com
 mydofiles.com
 myidsafety.com
@@ -8653,7 +8623,6 @@ nexcore.art
 nexlise.live
 nextleveltrade.ink
 nextleveltrade.io
-nextleveltrade.it.com
 nextleveltrade.org
 nextleveltrade.site
 nextquarry.com
@@ -9435,7 +9404,6 @@ plirenovikax.gifts
 plivoradenu.com
 plosaverniq.com
 plovarikenu.com
-plurfestivalgalaxy.com
 plurnedakio.gifts
 plurnostavi.digital
 plurnostavi.gifts
@@ -10483,7 +10451,6 @@ seazfeazdeaz.duckdns.org
 seazleazerfeasz.webredirect.org
 seazlenads.duckdns.org
 sebago-ayakkabi-turkiye.com
-sebeptr-l-g-r-n-l-t.myonlineportal.ch
 secknabisican.cfd
 secondturkiye.shop
 secure-signal.com-en.io
@@ -10956,7 +10923,6 @@ sonhaberler565.com
 sonhaberleri255.shop
 sonhaberleri365tr.cfd
 sonhaberleritr.cfd
-sonicwall-netextender.nl
 sonlardancandansad.shop
 sonlardansonkzler.shop
 sonnbsvrrprmsynnnkmpnyaaa.art
@@ -10972,7 +10938,6 @@ sonrakonusalim.click
 sonrx2odso12xll32.duckdns.org
 sons-chubby-pushing-habits.trycloudflare.com
 sonsaniyeyebirakmamaliyiz.sbs
-sophos-connect.org
 sorguceza.org
 sorgudava.net
 sorguidari.org
@@ -11960,7 +11925,6 @@ telegrgam.com
 telegrtam.com.cn
 telekomonline.com.tr
 teleram914.oss-cn-hongkong.aliyuncs.com
-temucoin.lat
 tenkoff.org
 tep-kampanyam.my-homeip.de
 teracan2321sonca.cfd
@@ -12852,8 +12816,6 @@ vornuqem.buzz
 vostro-bntr.club
 voucherpoint.cfd
 voxiano.qpon
-vpn-connection.pro
-vpn-fortinet.com
 vpn-proton-setup.com
 vpolisi155.online
 vr341zxxx312.sbs
@@ -12925,7 +12887,6 @@ wannews.com.tr
 warqwrghw.xyz
 wasaredoor.shop
 washquarry.bond
-watchguard-vpn.com
 waveholiday.com
 waxheritagejuicy.com
 wazqunor.icu
@@ -13308,7 +13269,6 @@ yenidenn-resmi-duyuru.sbs
 yenidn-resmi-duyuru.sbs
 yenifirsatlarimss.com
 yenifirsatlarizle.com
-yenifirsattlarrrysf.ct.ws
 yenifirsattr.com
 yenigarbbvntisayfse62.info
 yeniguzelgunlerkapida.com
